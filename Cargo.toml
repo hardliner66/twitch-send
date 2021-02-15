@@ -1,14 +1,12 @@
 [package]
 name = "twitch-send"
 description = "Command line tool to send messages to twitch"
-version = "0.1.0"
+version = "1.0.0"
 authors = ["hardliner66 <hardliner66@gmail.com>"]
 edition = "2018"
 license-file = "LICENSE"
 repository = "https://github.com/hardliner66/twitch-send"
 readme = "README.md"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 twitch-irc = "2.2.0"
