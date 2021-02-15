@@ -16,9 +16,7 @@ You will need to set the following environment variables
 ## Install the binary
 
 ```bash
-git clone https://github.com/hardliner66/twitch-send
-cd twitch-send
-cargo install --force --path .
+cargo install --force twitch-send
 ```
 
 ## Run
