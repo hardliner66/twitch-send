@@ -9,9 +9,9 @@ Command Line Tool to send messages to your twitch chat
 ## Setup twitch authentication
 
 You will need to set the following environment variables
-- NVIM_TWITCH_TOKEN can be generated at [twitchapps.com/tmi](https://twitchapps.com/tmi).
-- NVIM_TWITCH_NAME is your twitch name
-- NVIM_TWITCH_CHANNEL the twitch channel to join
+- TWITCH_SEND_TOKEN can be generated at [twitchapps.com/tmi](https://twitchapps.com/tmi).
+- TWITCH_SEND_NAME is your twitch name
+- TWITCH_SEND_CHANNEL the twitch channel to join
 
 ## Install the binary
 
