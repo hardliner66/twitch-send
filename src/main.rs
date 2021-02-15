@@ -39,7 +39,5 @@ async fn main() {
     client.join(channel_to_join.clone());
     let msg = std::env::args().skip(1).collect::<Vec<_>>().join(" ");
 
-    client.say(twitch_name, dbg!(msg)).await.unwrap();
-
-    tokio::time::sleep(std::time::Duration::from_secs(2)).await;
+    client.say(twitch_name, msg).await.unwrap();
 }
