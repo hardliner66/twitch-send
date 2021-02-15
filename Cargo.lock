@@ -620,7 +620,7 @@ dependencies = [
 
 [[package]]
 name = "twitch-send"
-version = "1.0.0"
+version = "1.0.1-alpha.0"
 dependencies = [
  "tokio",
  "twitch-irc",
