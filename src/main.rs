@@ -1,9 +1,11 @@
-use std::sync::mpsc::channel;
-use twitch_chat_wrapper::*;
+use twitch_irc::login::{StaticLoginCredentials, CredentialsPair};
+use twitch_irc::ClientConfig;
+use twitch_irc::TCPTransport;
+use twitch_irc::TwitchIRCClient;
 
-fn channel_to_join() -> Result<Vec<String>, Box<dyn std::error::Error>> {
+fn channel_to_join() -> Result<String, Box<dyn std::error::Error>> {
     let channel = get_env_var("NVIM_TWITCH_CHANNEL")?;
-    Ok(vec![channel])
+    Ok(channel)
 }
 
 fn get_env_var(key: &str) -> Result<String, Box<dyn std::error::Error>> {
@@ -11,19 +13,31 @@ fn get_env_var(key: &str) -> Result<String, Box<dyn std::error::Error>> {
     Ok(my_var)
 }
 
-fn main() {
-    let (tx, rx) = channel::<String>();
-    let (tx2, rx2) = channel::<ChatMessage>();
-
+#[tokio::main]
+async fn main() {
     let twitch_name = get_env_var("NVIM_TWITCH_NAME").unwrap();
-    let twitch_token = get_env_var("NVIM_TWITCH_TOKEN").unwrap();
+    let twitch_token = get_env_var("NVIM_TWITCH_TOKEN").unwrap().replacen("oauth:", "", 1);
     let channel_to_join = channel_to_join().unwrap();
 
-    std::thread::spawn(move || run(twitch_name, twitch_token, channel_to_join, rx, tx2).unwrap());
-    std::thread::spawn(move || loop {
-        let _ = rx2.recv();
-    });
+    // default configuration is to join chat as anonymous.
+    let config = ClientConfig {
+        login_credentials: StaticLoginCredentials {
+            credentials: CredentialsPair {
+                login: twitch_name.clone(),
+                token: Some(twitch_token),
+            }
+        },
+        ..ClientConfig::default()
+    };
 
-    tx.send(std::env::args().skip(1).collect::<Vec<_>>().join(" ")).unwrap();
-    std::thread::sleep(std::time::Duration::from_secs(2));
+    let (mut _incoming_messages, client) =
+        TwitchIRCClient::<TCPTransport, StaticLoginCredentials>::new(config);
+
+    // join a channel
+    client.join(channel_to_join.clone());
+    let msg = std::env::args().skip(1).collect::<Vec<_>>().join(" ");
+
+    client.say(twitch_name, dbg!(msg)).await.unwrap();
+
+    tokio::time::sleep(std::time::Duration::from_secs(2)).await;
 }
